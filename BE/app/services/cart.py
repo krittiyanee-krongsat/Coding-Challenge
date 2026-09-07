@@ -95,11 +95,13 @@ class CartService:
         new_qty = payload.quantity
         delta = new_qty - old_qty
 
+        # Reserve or release stock based on the change in quantity
+        # If the quantity increases, we decrement stock; if it decreases, we increment stock.
         if delta > 0:
             self.stock.apply(
                 meal_id=meal_id,
                 quantity=delta,
-                event_type=StockEventType.INCREMENT,
+                event_type=StockEventType.DECREMENT,
                 event_source=StockEventSource.USER,
                 reference_id=f"cart:{user_id}",
                 note="reserve on cart increase",
@@ -113,7 +115,7 @@ class CartService:
                 reference_id=f"cart:{user_id}",
                 note="release on cart decrease",
             )
-
+        # Update the cart with the new quantity or remove the item if the quantity is zero
         if new_qty == 0:
             del cart[meal_id]
         else:
