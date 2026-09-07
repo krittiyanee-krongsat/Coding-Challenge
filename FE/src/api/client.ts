@@ -115,7 +115,9 @@ export const api = {
     request<Order>(`/orders/${order_id}/complete`, { method: "POST" }),
 
   listStockEvents: (meal_id?: string) => {
-    const q = meal_id ? `?meal=${encodeURIComponent(meal_id)}` : "";
+    // If meal_id is provided, add it as a query parameter to the request URL
+    // This allows filtering stock events by meal_id on the backend
+    const q = meal_id ? `?meal_id=${encodeURIComponent(meal_id)}` : "";
     return request<StockEvent[]>(`/stock-events${q}`);
   },
 
