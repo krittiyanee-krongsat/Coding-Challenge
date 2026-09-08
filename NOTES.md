@@ -24,9 +24,11 @@
 
 **What I checked:** Followed the repro steps (reset → add `meal_2` qty 3 → place order → cancel) and watched stock at each step.
 
-**What was wrong:** Cancel changed the status to `CANCELLED` but never restored stock correctly.
+**What was wrong:** The cancel flow already looped through `order.lines` and called `stock.apply(..., event_type=INCREMENT, ...)` for each line, but the `quantity` passed was hardcoded to `1` instead of `line.quantity`. So regardless of how many units were ordered, cancel only restored 1 unit per line.
 
-**Fix:** On cancel, loop through `order.lines` and call `stock.apply(..., event_type=INCREMENT, ...)` for each line's quantity to restore stock before setting `order.status = CANCELLED`. Verified: after placing the order, `meal_2` stock dropped to `2`, and after cancel it returned to `5`.
+**Fix:** Changed `quantity=1` to `quantity=line.quantity` so the restored amount matches what was actually reserved.
+
+**Verified:** After placing the order, `meal_2` stock dropped to `2`, and after cancel it returned to `5` (previously would have only returned to `3`).
 
 #### BE-4 — Inventory bug when increasing cart quantity
 
