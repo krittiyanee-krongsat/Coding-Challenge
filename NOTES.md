@@ -10,7 +10,7 @@
 
 **Fix:** Removed the dead code block entirely, rather than just fixing the key. The rest of the checkout flow (building the `OrderLine`, creating the `Order`, saving to the db, then `self.cart.clear(user_id, release_stock=False)`) was already correct and needed no further changes.
 
-**Verified:** Order placed successfully (order number `SF-1001` appears in stock events with no 500), cart was empty afterward, and no `INCREMENT` event fired during checkout — stock only moves on add-to-cart (`DECREMENT`) and on cancel (`INCREMENT`, see BE-3).
+**Verified:** Order placed successfully (order number `SF-1001` appears in stock events with no 500), cart was empty afterward, and no `INCREMENT` event fired during checkout — stock only moves on add-to-cart (`DECREMENT`) and on cancel (`INCREMENT`).
 
 #### BE-2 — Wrong price bug
 
